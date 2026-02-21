@@ -15,27 +15,30 @@
 ---
 
 ## Executive Summary
-This lab demonstrates essential SOC analyst skills by generating, detecting, and documenting SSH authentication activity on a Linux endpoint.  
-Both successful and failed SSH login attempts were intentionally triggered to create realistic authentication artifacts for analysis.  
-These logs simulate attacker techniques (e.g., password guessing, invalid user enumeration) and form the foundation for SIEM alerting, brute-force detection, and incident triage workflows.
+This lab demonstrates SOC analyst fundamentals by generating and analyzing SSH authentication activity on a Linux system.  
+Both **successful** and **failed** SSH login attempts were intentionally produced to simulate attacker behavior.  
+These events create logs that are essential for brute-force detection, threat hunting, and SIEM correlation.
+
+All evidence is documented and stored in the `evidence/` directory.
 
 ---
 
 ## Lab Objectives
-- Validate baseline network connectivity from the Ubuntu VM.
-- Generate SSH authentication events using both valid and invalid credentials.
-- Extract SSH-specific logs using the systemd journal (`journalctl`).
-- Identify failed authentication patterns and metadata.
-- Map log information to SOC detection use cases.
-- Capture, store, and document all evidence using professional SOC-style formatting.
+- Validate Ubuntu network connectivity  
+- Trigger SSH authentication events from a Kali host  
+- Analyze SSH logs using `journalctl`  
+- Identify failed login and brute-force indicators  
+- Document evidence using SOC-style structure  
+- Push all work to GitHub using a fine-grained PAT  
 
 ---
 
 ## Environment Overview
-**Target Host:** Ubuntu Linux (SSH enabled)  
+**Target Host:** Ubuntu Linux  
 **Attacker Host:** Kali Linux  
 **Hypervisor:** VMware Workstation  
-**Core Tools:**
+
+**Tools Used:**
 - SSH client  
 - `journalctl`  
 - ICMP (`ping`)  
@@ -45,6 +48,9 @@ These logs simulate attacker techniques (e.g., password guessing, invalid user e
 ---
 
 ## Operational Workflow
-1. Verified network connectivity:
-   ```bash
-   ping -c 4 8.8.8.8
+
+### 1. Connectivity Validation
+Ensured the Ubuntu VM had network access using ICMP:
+
+```bash
+ping -c 4 8.8.8.8

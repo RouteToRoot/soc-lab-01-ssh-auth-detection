@@ -1,52 +1,81 @@
-# SOC Lab 01 — SSH Brute-Force Detection & Containment
+# SOC Lab 01 — SSH Authentication Event Detection
 
-## Objective
-Simulate repeated SSH login failures and practice Tier 1 SOC-style detection, triage, and containment using Linux auth logs.
+## 📑 Table of Contents
+1. [Executive Summary](#executive-summary)  
+2. [Lab Objectives](#lab-objectives)  
+3. [Environment Overview](#environment-overview)  
+4. [Operational Workflow](#operational-workflow)  
+5. [Threat Simulation](#threat-simulation)  
+6. [Log Acquisition & Analysis](#log-acquisition--analysis)  
+7. [Detection Engineering Insights](#detection-engineering-insights)  
+8. [Evidence](#evidence)  
+9. [Completion Status](#completion-status)  
+10. [Next Steps](#next-steps)
 
-## Lab Environment
-- Ubuntu VM (target server)
-- Kali VM (attack source)
-- VMware networking: (NAT/Bridged — fill in)
+---
 
-## Steps & Evidence
-### 1) Enable SSH on Ubuntu
-Commands:
-- `sudo apt update`
-- `sudo apt install -y openssh-server`
-- `sudo systemctl enable --now ssh`
+## Executive Summary
+This lab demonstrates foundational SOC analyst competencies by generating, identifying, and analyzing SSH authentication events on a Linux host.  
+The activity simulates attacker behavior (failed SSH login attempts) and uses native system logs to validate detection capabilities.  
+Captured log evidence is stored in a structured repository layout to support future SIEM integration or portfolio review.
 
-Evidence:
-- Screenshot: `01-ssh-status.png`
+---
 
-### 2) Generate Failed Logins from Kali
-Commands:
-- `ssh socuser@<UBUNTU_IP>`
+## Lab Objectives
+- Validate baseline network connectivity from the Ubuntu VM.
+- Generate SSH authentication activity (successful and failed).
+- Collect system logs from the `sshd` service.
+- Interpret and classify SSH authentication events.
+- Identify indicators related to brute-force activity or unauthorized access.
+- Document findings using SOC-style reporting structure.
 
-Evidence:
-- Screenshot: `02-kali-ssh-attempt.png`
+---
 
-### 3) Detect in Ubuntu auth logs
-Commands:
-- `sudo grep "Failed password" /var/log/auth.log | tail -n 15`
+## Environment Overview
+**Target System:** Ubuntu Linux  
+**Attacker System:** Kali Linux  
+**Hypervisor:** VMware Workstation  
+**Core Tools:**
+- SSH client  
+- systemd journal (`journalctl`)  
+- Ping (ICMP testing)  
+- Git + GitHub  
+- Fine-grained Personal Access Token (PAT) for Git push authentication  
 
-Evidence:
-- Screenshot: `03-failed-password-logs.png`
+---
 
-### 4) Contain (Block IP)
-Commands:
-- `sudo ufw enable`
-- `sudo ufw deny from <ATTACKER_IP> to any port 22`
-- `sudo ufw status numbered`
+## Operational Workflow
+The lab consists of the following major phases:
 
-Evidence:
-- Screenshot: `04-ufw-block.png`
+1. **Connectivity Validation:**  
+   Confirming that the Ubuntu VM was reachable using ICMP (`ping`).
 
-## Findings
-- Source IP (IOC): `<ATTACKER_IP>`
-- Target: Ubuntu SSH (port 22)
-- Result: No successful logins observed
+2. **Event Generation:**  
+   Triggering both valid and invalid SSH authentication attempts from the Kali VM.
 
-## Remediation / Hardening (Next)
-- SSH keys / disable password auth
-- Fail2ban
-- Restrict SSH to trusted IPs
+3. **Log Retrieval:**  
+   Using `journalctl -u ssh` to retrieve authentication events logged by systemd.
+
+4. **Evidence Capture:**  
+   Storing screenshots documenting each activity and placing them into the `evidence/` folder.
+
+5. **Repository Update:**  
+   Committing and pushing all artifacts to GitHub using a fine-grained PAT.
+
+---
+
+## Threat Simulation
+A controlled SSH authentication sequence was executed to replicate attacker behavior.  
+This included:
+
+- Attempts using **incorrect credentials** to simulate brute-force behavior.  
+- A **successful SSH login** to capture normal authentication entries.  
+
+These events helped generate a diverse log sample suitable for analysis.
+
+---
+
+## Log Acquisition & Analysis
+
+### Commands Executed
+#### Connectivity Test
